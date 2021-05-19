@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Big Analytics</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="sticky-footer-navbar.css" rel="stylesheet">
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
+
+  </head>
+  <body>
+
+    <div class="container-fluid"> 
+
+       <div class="row" style="background-color: transparent; margin-top: 50px; margin-bottom:20px">
+            <div class="col-3" style="background-color: transparent;">
+
+            </div>    
+            <div class="col-6" style="background-color: transparent; text-align: center;">
+                <h1>{{ namecotacao }}</h1>              
+            </div>  
+            <div class="col-3">
+         
+            </div>  
+       </div>
+
+       <div class="row" style="background-color: transparent; margin-top: 50px; margin-bottom:10px">
+            <div class="col-3" style="background-color: transparent;">
+
+            </div>    
+            <div class="col-6" style="background-color: transparent; text-align: center;">
+                <div class="row" style="float: right; padding-right: 20px; background-color: transparent;">
+                    <div class="col"><i class="far fa-file-pdf"></i></div>
+                    <div class="col"><i class="fas fa-print"></i></div>
+                    <div class="col"><i class="fas fa-file-csv"></i></div>
+                    <div class="col"><i class="far fa-file-excel"></i></div>
+                </div>                        
+            </div>  
+            <div class="col-3">
+         
+            </div>  
+       </div>       
+
+       <div class="row" style="margin-bottom: 50px">
+       
+            <div class="col">                 
+            </div>         
+            <div class="col-6" style="background-color: transparent;">
+                 <canvas id="barChart" width="30" height="10"></canvas>
+            </div>
+            <div class="col">
+            </div>          
+       
+       </div>
+
+       
+       
+       <div class="row" style="background-color: transparent; margin-top: 15px; margin-bottom: 50px">
+            <div class="col-3" style="background-color: transparent;">
+
+            </div>    
+            <div class="col-6" style="background-color: transparent; margin-left: 20px">
+               <a class="btn btn-outline-primary" href="{{request.META.HTTP_REFERER}}" 
+               style="width: 20%; border-radius: 100px;">
+                    Voltar
+               </a>
+            </div>  
+            <div class="col-3" style="background-color: transparent;">
+        
+            </div>
+       
+       </div>
+
+    </div>
+
+   <script>
+
+        const colors = {
+          purple: {
+            default: "rgba(149, 76, 233, 1)",
+            half: "rgba(149, 76, 233, 0.7)",
+            quarter: "rgba(149, 76, 233, 0.6)",
+            zero: "rgba(149, 76, 233, 0.05)"
+          },
+          indigo: {
+            default: "rgba(80, 102, 120, 1)",
+            quarter: "rgba(80, 102, 120, 0.25)"
+            /*qdefault: "rgba(110, 15, 219,)",
+            quarter: "rgba(110, 15, 219, 0.25)"*/
+          }
+        };    
+
+    var ctx = document.getElementById("barChart").getContext('2d');
+    var categ  = JSON.parse('{{ categ|safe }}');
+    var value  = JSON.parse('{{ value|safe }}');
+    var dollar = JSON.parse('{{ dollar|safe }}');
+    var labelx = JSON.parse('{{ labelx|safe }}');
+
+    gradient = ctx.createLinearGradient(0, 25, 0, 300);
+    gradient.addColorStop(0, colors.purple.half);
+    gradient.addColorStop(0.35, colors.purple.quarter);
+    gradient.addColorStop(1, colors.purple.zero);    
+
+    var barChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: categ,
+            datasets: [{
+                label: labelx,
+                data: value,
+                fill: true,
+                backgroundColor: gradient,
+                pointBackgroundColor: colors.purple.default,
+                borderColor: colors.purple.default,
+                lineTension: 0.2,
+                borderWidth: 2,
+                pointRadius: 3,          
+
+               
+             
+            }]
+        },
+        options: 
+        {
+
+            layout: 
+            {
+              padding: 10
+            },
+            responsive: true,
+            legend: 
+            {
+              display: false
+            },          
+            scales: 
+            {
+                yAxes: [{
+                    ticks: {
+               min: Math.min.apply(this, value) - 0.02,
+               max: Math.max.apply(this, value) + 0.02,
+               stepSize: 1                  
+                    }
+
+                }]
+            }
+        }
+    });
+
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    
+  </body>
+</html>
+
+
